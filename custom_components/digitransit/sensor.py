@@ -1,4 +1,4 @@
-"""Sensor platform for Vaasa Lifti integration."""
+"""Sensor platform for Digitransit integration."""
 from __future__ import annotations
 
 from datetime import datetime, timedelta
@@ -31,18 +31,18 @@ async def async_setup_entry(
     entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up Vaasa Lifti sensor based on a config entry."""
+    """Set up Digitransit sensor based on a config entry."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
     
     entities = []
     for stop in entry.data["stops"]:
-        entities.append(VaasaLiftiSensor(coordinator, stop))
+        entities.append(DigitransitSensor(coordinator, stop))
     
     async_add_entities(entities)
 
 
-class VaasaLiftiSensor(CoordinatorEntity, SensorEntity):
-    """Representation of a Vaasa Lifti bus stop sensor."""
+class DigitransitSensor(CoordinatorEntity, SensorEntity):
+    """Representation of a Digitransit bus stop sensor."""
 
     _attr_has_entity_name = True
     _attr_icon = "mdi:bus"
@@ -53,6 +53,7 @@ class VaasaLiftiSensor(CoordinatorEntity, SensorEntity):
         self._stop_id = stop_config["stop_id"]
         self._stop_name = stop_config["name"]
         self._num_departures = stop_config.get("num_departures", 5)
+        self._router = stop_config.get("router", "waltti")
         
         self._attr_unique_id = f"{DOMAIN}_{self._stop_id}"
         self._attr_name = self._stop_name
@@ -95,6 +96,7 @@ class VaasaLiftiSensor(CoordinatorEntity, SensorEntity):
             ATTR_STOP_CODE: stop_data.get("code", ""),
             "stop_id": self._stop_id,
             "stop_name": stop_data.get("name", self._stop_name),
+            "router": self._router,
         }
         
         # Process departures

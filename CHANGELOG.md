@@ -38,4 +38,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Automation examples
 - Contributing guidelines
 
-[0.1.0]: https://github.com/YOUR_USERNAME/ha-digitransit-bus/releases/tag/v0.1.0
+[0.1.0]: https://github.com/valtteri-aho/Hassio-digitransit/releases/tag/v0.1.0

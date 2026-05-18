@@ -1,4 +1,4 @@
-"""Config flow for Vaasa Lifti integration."""
+"""Config flow for Digitransit integration."""
 from __future__ import annotations
 
 import logging
@@ -20,8 +20,10 @@ from .const import (
     CONF_STOPS,
     CONF_STOP_ID,
     CONF_NUM_DEPARTURES,
+    CONF_ROUTER,
     DEFAULT_NUM_DEPARTURES,
-    API_BASE_URL,
+    API_ROUTERS,
+    DEFAULT_ROUTER,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -37,8 +39,10 @@ async def validate_api_key(hass: HomeAssistant, api_key: str) -> bool:
     query = '{"query": "{ agencies { gtfsId name } }"}'
     
     try:
+        # Use default router for validation
+        base_url = API_ROUTERS[DEFAULT_ROUTER]
         async with session.post(
-            API_BASE_URL, data=query, headers=headers, timeout=10
+            base_url, data=query, headers=headers, timeout=10
         ) as response:
             if response.status == 200:
                 data = await response.json()
@@ -58,8 +62,10 @@ async def validate_stop_id(hass: HomeAssistant, api_key: str, stop_id: str) -> d
     query = f'{{"query": "{{ stop(id: \\"{stop_id}\\") {{ name code gtfsId }} }}"}}'
     
     try:
+        # Try with default router first (waltti)
+        base_url = API_ROUTERS[DEFAULT_ROUTER]
         async with session.post(
-            API_BASE_URL, data=query, headers=headers, timeout=10
+            base_url, data=query, headers=headers, timeout=10
         ) as response:
             if response.status == 200:
                 data = await response.json()
@@ -70,13 +76,28 @@ async def validate_stop_id(hass: HomeAssistant, api_key: str, stop_id: str) -> d
                         "code": stop.get("code", ""),
                         "gtfs_id": stop.get("gtfsId", stop_id),
                     }
+            else:
+                # If default router fails, try other routers
+                for router_name, base_url in API_ROUTERS.items():
+                    async with session.post(
+                        base_url, data=query, headers=headers, timeout=10
+                    ) as response2:
+                        if response2.status == 200:
+                            data = await response2.json()
+                            stop = data.get("data", {}).get("stop")
+                            if stop:
+                                return {
+                                    "name": stop.get("name", "Unknown"),
+                                    "code": stop.get("code", ""),
+                                    "gtfs_id": stop.get("gtfsId", stop_id),
+                                }
     except (aiohttp.ClientError, TimeoutError):
         pass
     return None
 
 
-class VaasaLiftiConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
-    """Handle a config flow for Vaasa Lifti."""
+class DigitransitConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+    """Handle a config flow for Digitransit."""
 
     VERSION = 1
 
@@ -132,6 +153,7 @@ class VaasaLiftiConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         CONF_NUM_DEPARTURES: user_input.get(
                             CONF_NUM_DEPARTURES, DEFAULT_NUM_DEPARTURES
                         ),
+                        CONF_ROUTER: user_input.get(CONF_ROUTER, "waltti"),
                     }
                 )
                 
@@ -148,6 +170,7 @@ class VaasaLiftiConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     vol.Optional(
                         CONF_NUM_DEPARTURES, default=DEFAULT_NUM_DEPARTURES
                     ): vol.All(vol.Coerce(int), vol.Range(min=1, max=20)),
+                    vol.Optional(CONF_ROUTER, default=DEFAULT_ROUTER): vol.In(list(API_ROUTERS.keys())),
                 }
             ),
             errors=errors,
@@ -166,7 +189,7 @@ class VaasaLiftiConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             else:
                 # Create the entry
                 return self.async_create_entry(
-                    title="Vaasa Lifti",
+                    title="Digitransit",
                     data={
                         CONF_API_KEY: self.api_key,
                         CONF_STOPS: self.stops,
@@ -189,13 +212,13 @@ class VaasaLiftiConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     @callback
     def async_get_options_flow(
         config_entry: config_entries.ConfigEntry,
-    ) -> VaasaLiftiOptionsFlow:
+    ) -> DigitransitOptionsFlow:
         """Get the options flow for this handler."""
-        return VaasaLiftiOptionsFlow(config_entry)
+        return DigitransitOptionsFlow(config_entry)
 
 
-class VaasaLiftiOptionsFlow(config_entries.OptionsFlow):
-    """Handle options flow for Vaasa Lifti."""
+class DigitransitOptionsFlow(config_entries.OptionsFlow):
+    """Handle options flow for Digitransit."""
 
     def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
         """Initialize options flow."""

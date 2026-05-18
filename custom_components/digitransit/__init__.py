@@ -1,4 +1,4 @@
-"""The Vaasa Lifti integration."""
+"""The Digitransit integration."""
 from __future__ import annotations
 
 import logging
@@ -16,7 +16,8 @@ from .const import (
     CONF_API_KEY,
     CONF_STOPS,
     DEFAULT_SCAN_INTERVAL,
-    API_BASE_URL,
+    API_ROUTERS,
+    DEFAULT_ROUTER,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -25,10 +26,10 @@ PLATFORMS: list[Platform] = [Platform.SENSOR]
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Set up Vaasa Lifti from a config entry."""
+    """Set up Digitransit from a config entry."""
     hass.data.setdefault(DOMAIN, {})
     
-    coordinator = VaasaLiftiCoordinator(hass, entry)
+    coordinator = DigitransitCoordinator(hass, entry)
     await coordinator.async_config_entry_first_refresh()
     
     hass.data[DOMAIN][entry.entry_id] = coordinator
@@ -46,8 +47,8 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     return unload_ok
 
 
-class VaasaLiftiCoordinator(DataUpdateCoordinator):
-    """Class to manage fetching Vaasa Lifti data."""
+class DigitransitCoordinator(DataUpdateCoordinator):
+    """Class to manage fetching Digitransit data."""
 
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
         """Initialize."""
@@ -70,8 +71,9 @@ class VaasaLiftiCoordinator(DataUpdateCoordinator):
             for stop in self.stops:
                 stop_id = stop["stop_id"]
                 num_departures = stop.get("num_departures", 5)
+                router = stop.get("router", "waltti")
                 
-                stop_data = await self._fetch_stop_data(stop_id, num_departures)
+                stop_data = await self._fetch_stop_data(stop_id, num_departures, router)
                 data[stop_id] = stop_data
             
             return data
@@ -79,12 +81,15 @@ class VaasaLiftiCoordinator(DataUpdateCoordinator):
         except Exception as err:
             raise UpdateFailed(f"Error communicating with API: {err}") from err
 
-    async def _fetch_stop_data(self, stop_id: str, num_departures: int) -> dict:
+    async def _fetch_stop_data(self, stop_id: str, num_departures: int, router: str = "waltti") -> dict:
         """Fetch data for a single stop."""
         headers = {
             "Content-Type": "application/json",
             "digitransit-subscription-key": self.api_key,
         }
+        
+        # Determine the API URL based on router
+        api_url = f"https://api.digitransit.fi/routing/v2/{router}/gtfs/v1"
         
         query = f"""{{
             "query": "{{
@@ -111,7 +116,7 @@ class VaasaLiftiCoordinator(DataUpdateCoordinator):
         
         try:
             async with self.session.post(
-                API_BASE_URL,
+                api_url,
                 data=query,
                 headers=headers,
                 timeout=aiohttp.ClientTimeout(total=10),

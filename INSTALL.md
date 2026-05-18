@@ -16,7 +16,7 @@ Clone or download this repository to your Home Assistant config directory:
 
 ```bash
 cd /config
-git clone https://github.com/YOUR_USERNAME/ha-digitransit-bus.git bussiaikataulu
+git clone https://github.com/valtteri-aho/Hassio-digitransit.git bussiaikataulu
 ```
 
 Or manually download and extract to `/config/bussiaikataulu/`

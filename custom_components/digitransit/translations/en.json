@@ -1,0 +1,47 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Digitransit API Key",
+        "description": "Enter your Digitransit API key. You can get one from https://www.digitransit.fi/",
+        "data": {
+          "api_key": "API Key"
+        }
+      },
+      "stop": {
+        "title": "Add Bus Stop",
+        "description": "Enter the bus stop ID (e.g., Vaasa:159712) and optional settings. You can find stop IDs in the Digitransit web interface or by using a GTFS search tool.",
+        "data": {
+          "stop_id": "Stop ID",
+          "num_departures": "Number of Departures to Show",
+          "router": "Router"
+        },
+        "description_placeholders": {
+          "example": "Vaasa:159712 or Vaasa:302812"
+        }
+      },
+      "add_another": {
+        "title": "Add Another Stop?",
+        "description": "You have added {stops_added} stop(s). Do you want to add another one?"
+      }
+    },
+    "error": {
+      "invalid_api_key": "Invalid API key. Please check your Digitransit API key.",
+      "invalid_stop_id": "Invalid stop ID. Please make sure the stop exists and is accessible."
+    },
+    "abort": {
+      "already_configured": "This integration is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Options",
+        "description": "Configure options for the Digitransit integration.",
+        "data": {
+          "num_departures": "Number of Departures to Show"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "domain": "digitransit",
+  "name": "Digitransit",
+  "codeowners": ["@valtteri-aho"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/valtteri-aho/Hassio-digitransit",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/valtteri-aho/Hassio-digitransit/issues",
+  "requirements": [],
+  "version": "1.0.0"
+}

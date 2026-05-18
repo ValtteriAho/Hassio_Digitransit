@@ -51,10 +51,10 @@ After installation, you'll have:
 4. Add template sensors
 5. Add Lovelace card to dashboard
 
-Full installation guide in [README.md](https://github.com/YOUR_USERNAME/ha-digitransit-bus/blob/main/README.md)
+Full installation guide in [README.md](https://github.com/valtteri-aho/Hassio-digitransit/blob/main/README.md)
 
 ## Support
 
-- 📖 [Full Documentation](https://github.com/YOUR_USERNAME/ha-digitransit-bus)
-- 🐛 [Report Issues](https://github.com/YOUR_USERNAME/ha-digitransit-bus/issues)
+- 📖 [Full Documentation](https://github.com/valtteri-aho/Hassio-digitransit)
+- 🐛 [Report Issues](https://github.com/valtteri-aho/Hassio-digitransit/issues)
 - 💬 [Home Assistant Community](https://community.home-assistant.io/)
