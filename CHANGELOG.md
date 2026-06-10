@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-06-10
+
+### Changed
+- Clarified setup docs to use Digitransit API Management subscription keys.
+- Updated API key instructions to point to https://portal-api.digitransit.fi/ in README, INSTALL, and project info docs.
+
 ## [0.1.0] - 2026-06-10
 
 ### Added
@@ -34,3 +40,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added release checklist to contribution documentation.
 
 [0.1.0]: https://github.com/ValtteriAho/Hassio_Digitransit/releases/tag/v0.1.0
+[0.1.1]: https://github.com/ValtteriAho/Hassio_Digitransit/releases/tag/v0.1.1

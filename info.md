@@ -13,7 +13,7 @@ Home Assistant custom integration for real-time Finnish public transit departure
 ## Requirements
 
 - Home Assistant 2023.10.0+
-- Digitransit API key from https://digitransit.fi
+- Digitransit API subscription key from https://portal-api.digitransit.fi/
 
 ## Included Files
 
@@ -26,7 +26,7 @@ Home Assistant custom integration for real-time Finnish public transit departure
 1. Install integration via HACS or copy `custom_components/digitransit` to Home Assistant config directory.
 2. Restart Home Assistant.
 3. Add integration from Settings -> Devices & Services.
-4. Enter API key and configure stop IDs.
+4. Enter Digitransit API subscription key and configure stop IDs.
 
 ## Support
 

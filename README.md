@@ -7,7 +7,7 @@ Real-time Finnish public transit departures in Home Assistant via Digitransit Gr
 
 ## Release
 
-- Current release: `0.1.0`
+- Current release: `0.1.1`
 - This is the first public release of the integration.
 
 ## Features
@@ -22,7 +22,7 @@ Real-time Finnish public transit departures in Home Assistant via Digitransit Gr
 ## Requirements
 
 - Home Assistant 2023.10.0 or newer
-- Digitransit API key from https://digitransit.fi
+- Digitransit API subscription key from https://portal-api.digitransit.fi/
 
 ## Quick Start (Recommended)
 
@@ -30,7 +30,7 @@ Real-time Finnish public transit departures in Home Assistant via Digitransit Gr
 2. Restart Home Assistant.
 3. Go to Settings -> Devices & Services -> Add Integration.
 4. Search for Digitransit.
-5. Enter your API key.
+5. Enter your Digitransit API subscription key.
 6. Add one or more stop IDs (for example `HSL:1010105` or `Vaasa:159712`).
 
 ## Install via HACS Custom Repository
@@ -82,7 +82,7 @@ These are examples only. The maintained setup path is the config-flow custom int
 If entities do not appear:
 
 1. Confirm the integration is loaded under Settings -> Devices & Services.
-2. Confirm API key is valid.
+2. Confirm subscription key is valid and active in Digitransit API portal.
 3. Confirm stop IDs exist in Digitransit.
 4. Check logs under Settings -> System -> Logs.
 
