@@ -1,18 +1,20 @@
 """Sensor platform for Digitransit integration."""
 from __future__ import annotations
 
-from datetime import datetime, timedelta
+from datetime import datetime
 import logging
 
-from homeassistant.components.sensor import SensorEntity, SensorDeviceClass
+from homeassistant.components.sensor import SensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.util import dt as dt_util
 
 from .const import (
     DOMAIN,
+    CONF_STOPS,
     ATTR_STOP_CODE,
     ATTR_DEPARTURES,
     ATTR_NEXT_DEPARTURE,
@@ -35,7 +37,7 @@ async def async_setup_entry(
     coordinator = hass.data[DOMAIN][entry.entry_id]
     
     entities = []
-    for stop in entry.data["stops"]:
+    for stop in entry.data[CONF_STOPS]:
         entities.append(DigitransitSensor(coordinator, stop))
     
     async_add_entities(entities)
@@ -62,13 +64,13 @@ class DigitransitSensor(CoordinatorEntity, SensorEntity):
     def native_value(self) -> str | None:
         """Return the state of the sensor."""
         if not self.coordinator.data or self._stop_id not in self.coordinator.data:
-            return "No data"
+            return None
         
         stop_data = self.coordinator.data[self._stop_id]
         departures = stop_data.get("stoptimesWithoutPatterns", [])
         
         if not departures:
-            return "No departures"
+            return None
         
         # Get next departure
         next_departure = self._get_next_departure(departures)
@@ -81,7 +83,17 @@ class DigitransitSensor(CoordinatorEntity, SensorEntity):
             else:
                 return f"{minutes} min"
         
-        return "No departures"
+        return None
+
+    @property
+    def device_info(self) -> DeviceInfo:
+        """Return device metadata so entities group in Home Assistant UI."""
+        return DeviceInfo(
+            identifiers={(DOMAIN, self._stop_id)},
+            manufacturer="Digitransit",
+            model="Public Transit Stop",
+            name=self._stop_name,
+        )
 
     @property
     def extra_state_attributes(self) -> dict:

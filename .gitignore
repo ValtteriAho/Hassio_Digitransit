@@ -19,3 +19,9 @@ Thumbs.db
 # Personal
 api_keys.txt
 *_personal.yaml
+
+# Local environment and secrets
+.env
+.env.*
+secrets.yaml
+*.secrets

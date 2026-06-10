@@ -27,7 +27,8 @@
     },
     "error": {
       "invalid_api_key": "Invalid API key. Please check your Digitransit API key.",
-      "invalid_stop_id": "Invalid stop ID. Please make sure the stop exists and is accessible."
+      "invalid_stop_id": "Invalid stop ID. Please make sure the stop exists and is accessible.",
+      "already_added_stop": "This stop has already been added."
     },
     "abort": {
       "already_configured": "This integration is already configured."

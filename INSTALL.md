@@ -1,80 +1,54 @@
 # Installation Instructions
 
-Quick guide for adding Digitransit Bus Timetables to your Home Assistant.
+This guide covers the recommended setup for the Digitransit custom integration.
 
 ## Prerequisites
 
-✅ Home Assistant 2023.1.0 or newer  
-✅ Digitransit API subscription key ([Get one here](https://digitransit.fi))  
-✅ Your bus stop codes
+- Home Assistant 2023.10.0 or newer
+- Digitransit API subscription key (https://digitransit.fi)
+- Bus stop IDs (for example `HSL:1010105`, `Vaasa:159712`)
 
-## Installation Steps
+## Install via HACS (Recommended)
 
-### 1. Download Files
+1. Open HACS in Home Assistant.
+2. Add this repository as a custom repository if needed.
+3. Install Digitransit integration.
+4. Restart Home Assistant.
 
-Clone or download this repository to your Home Assistant config directory:
+## Manual Install
 
-```bash
-cd /config
-git clone https://github.com/valtteri-aho/Hassio-digitransit.git bussiaikataulu
-```
+1. Copy `custom_components/digitransit` into your Home Assistant config at:
 
-Or manually download and extract to `/config/bussiaikataulu/`
+	`/config/custom_components/digitransit`
 
-### 2. Configure Your Stops
+2. Restart Home Assistant.
 
-Copy the example file and edit it:
+## Configure in Home Assistant UI
 
-```bash
-cd bussiaikataulu
-cp sensor_config.example.yaml sensor_config.yaml
-nano sensor_config.yaml
-```
+1. Go to Settings -> Devices & Services.
+2. Click Add Integration.
+3. Search for Digitransit.
+4. Enter API key.
+5. Add stop IDs and select router for each stop.
 
-Replace these placeholders:
-- `YOUR_API_KEY` → Your Digitransit subscription key
-- `ROUTER` → `hsl` (Helsinki) or `waltti` (other cities)
-- `CITY:STOPCODE` → Your actual stop codes (e.g., `Vaasa:159712`)
+## Finding Stop IDs
 
-### 3. Add to configuration.yaml
-
-Add these lines to your `/config/configuration.yaml`:
-
-```yaml
-rest: !include bussiaikataulu/sensor_config.yaml
-template: !include bussiaikataulu/template_sensors.yaml
-```
-
-### 4. Restart Home Assistant
-
-Settings → System → Restart
-
-### 5. Add Dashboard Card
-
-1. Edit your dashboard
-2. Add card → Manual (YAML)
-3. Copy one of the card configs from `lovelace_card.yaml`
-4. Save
-
-## Finding Your Stop Codes
-
-**Helsinki region:**
-- Go to [reittiopas.hsl.fi](https://reittiopas.hsl.fi)
-- Search for your stop
-- Code is in URL: `HSL:1010105`
-
-**Other cities:**
-- Visit your city's site (e.g., `tampere.digitransit.fi`)
-- Click your stop
-- Code is in URL: `CityName:XXXXX`
+- HSL region: https://reittiopas.hsl.fi
+- Waltti/city planners: city-specific Digitransit sites (for example `tampere.digitransit.fi`)
 
 ## Verification
 
-Check that sensors appear:
-- Developer Tools → States
-- Search for: `bussi_pysakki`
-- Should see 5 new sensors
+1. Open Developer Tools -> States.
+2. Search for `sensor.` entities created by Digitransit.
+3. Confirm sensor attributes include `departures` and next departure details.
 
-## Need Help?
+## Legacy YAML Mode (Optional)
 
-See [README.md](README.md) for detailed troubleshooting.
+Legacy YAML files are still available as examples in repository root:
+
+- `sensor_config.yaml`
+- `sensor_config.example.yaml`
+- `template_sensors.yaml`
+- `lovelace_card.yaml`
+
+These are not required for the config-flow custom integration setup.

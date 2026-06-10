@@ -12,7 +12,6 @@ from homeassistant.const import CONF_NAME
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-import homeassistant.helpers.config_validation as cv
 
 from .const import (
     DOMAIN,
@@ -62,12 +61,18 @@ async def validate_stop_id(hass: HomeAssistant, api_key: str, stop_id: str) -> d
     query = f'{{"query": "{{ stop(id: \\"{stop_id}\\") {{ name code gtfsId }} }}"}}'
     
     try:
-        # Try with default router first (waltti)
-        base_url = API_ROUTERS[DEFAULT_ROUTER]
-        async with session.post(
-            base_url, data=query, headers=headers, timeout=10
-        ) as response:
-            if response.status == 200:
+        # Try default router first, then all others.
+        router_urls = [API_ROUTERS[DEFAULT_ROUTER]] + [
+            url for name, url in API_ROUTERS.items() if name != DEFAULT_ROUTER
+        ]
+
+        for base_url in router_urls:
+            async with session.post(
+                base_url, data=query, headers=headers, timeout=10
+            ) as response:
+                if response.status != 200:
+                    continue
+
                 data = await response.json()
                 stop = data.get("data", {}).get("stop")
                 if stop:
@@ -76,21 +81,6 @@ async def validate_stop_id(hass: HomeAssistant, api_key: str, stop_id: str) -> d
                         "code": stop.get("code", ""),
                         "gtfs_id": stop.get("gtfsId", stop_id),
                     }
-            else:
-                # If default router fails, try other routers
-                for router_name, base_url in API_ROUTERS.items():
-                    async with session.post(
-                        base_url, data=query, headers=headers, timeout=10
-                    ) as response2:
-                        if response2.status == 200:
-                            data = await response2.json()
-                            stop = data.get("data", {}).get("stop")
-                            if stop:
-                                return {
-                                    "name": stop.get("name", "Unknown"),
-                                    "code": stop.get("code", ""),
-                                    "gtfs_id": stop.get("gtfsId", stop_id),
-                                }
     except (aiohttp.ClientError, TimeoutError):
         pass
     return None
@@ -111,6 +101,9 @@ class DigitransitConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     ) -> FlowResult:
         """Handle the initial step."""
         errors: dict[str, str] = {}
+
+        if self._async_current_entries():
+            return self.async_abort(reason="already_configured")
 
         if user_input is not None:
             api_key = user_input[CONF_API_KEY]
@@ -140,6 +133,42 @@ class DigitransitConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         if user_input is not None:
             stop_id = user_input[CONF_STOP_ID]
+
+            # Prevent duplicates in the current flow.
+            if any(stop.get(CONF_STOP_ID) == stop_id for stop in self.stops):
+                errors["base"] = "already_added_stop"
+            else:
+                # Prevent duplicates against already configured entries.
+                existing_entries = self.hass.config_entries.async_entries(DOMAIN)
+                for existing_entry in existing_entries:
+                    for existing_stop in existing_entry.data.get(CONF_STOPS, []):
+                        if existing_stop.get(CONF_STOP_ID) == stop_id:
+                            errors["base"] = "already_added_stop"
+                            break
+                    if errors:
+                        break
+
+            if errors:
+                return self.async_show_form(
+                    step_id="stop",
+                    data_schema=vol.Schema(
+                        {
+                            vol.Required(CONF_STOP_ID, default=stop_id): str,
+                            vol.Optional(
+                                CONF_NUM_DEPARTURES,
+                                default=user_input.get(CONF_NUM_DEPARTURES, DEFAULT_NUM_DEPARTURES),
+                            ): vol.All(vol.Coerce(int), vol.Range(min=1, max=20)),
+                            vol.Optional(
+                                CONF_ROUTER,
+                                default=user_input.get(CONF_ROUTER, DEFAULT_ROUTER),
+                            ): vol.In(list(API_ROUTERS.keys())),
+                        }
+                    ),
+                    errors=errors,
+                    description_placeholders={
+                        "example": "Vaasa:159712 or Vaasa:302812"
+                    },
+                )
             
             # Validate stop ID
             stop_info = await validate_stop_id(self.hass, self.api_key, stop_id)
@@ -217,7 +246,7 @@ class DigitransitConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return DigitransitOptionsFlow(config_entry)
 
 
-class DigitransitOptionsFlow(config_entries.OptionsFlow):
+class DigitransitOptionsFlow(config_entries.OptionsFlowWithReload):
     """Handle options flow for Digitransit."""
 
     def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
@@ -229,6 +258,21 @@ class DigitransitOptionsFlow(config_entries.OptionsFlow):
     ) -> FlowResult:
         """Manage the options."""
         if user_input is not None:
+            # Apply default departures to all configured stops.
+            stops = []
+            for stop in self.config_entry.data.get(CONF_STOPS, []):
+                updated_stop = dict(stop)
+                updated_stop[CONF_NUM_DEPARTURES] = user_input[CONF_NUM_DEPARTURES]
+                stops.append(updated_stop)
+
+            self.hass.config_entries.async_update_entry(
+                self.config_entry,
+                data={
+                    **self.config_entry.data,
+                    CONF_STOPS: stops,
+                },
+                options=user_input,
+            )
             return self.async_create_entry(title="", data=user_input)
 
         return self.async_show_form(

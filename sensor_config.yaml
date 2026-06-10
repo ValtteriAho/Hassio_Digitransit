@@ -7,7 +7,7 @@
   payload: '{ "query": "{ stop(id: \"Vaasa:159712\") { name code stoptimesWithoutPatterns(numberOfDepartures: 5) { scheduledDeparture realtimeDeparture realtime serviceDay headsign trip { route { shortName longName } } } } }" }'
   headers:
     Content-Type: application/json
-    digitransit-subscription-key: "831ecd5c45b64723a111003127051514"
+    digitransit-subscription-key: "YOUR_API_KEY"
     User-Agent: Home-Assistant
   scan_interval: 60
   sensor:
@@ -25,7 +25,7 @@
   payload: '{ "query": "{ stop(id: \"Vaasa:302812\") { name code stoptimesWithoutPatterns(numberOfDepartures: 5) { scheduledDeparture realtimeDeparture realtime serviceDay headsign trip { route { shortName longName } } } } }" }'
   headers:
     Content-Type: application/json
-    digitransit-subscription-key: "831ecd5c45b64723a111003127051514"
+    digitransit-subscription-key: "YOUR_API_KEY"
     User-Agent: Home-Assistant
   scan_interval: 60
   sensor:

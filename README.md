@@ -1,128 +1,98 @@
-# 🚌 Digitransit Bus Timetables for Home Assistant
+# Digitransit for Home Assistant
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://hacs.xyz)
 [![License](https://img.shields.io/github/license/valtteri-aho/Hassio-digitransit.svg)](LICENSE)
 
-Display real-time Finnish bus schedules from Digitransit API in your Home Assistant dashboard using YAML-based configuration.
+Real-time Finnish public transit departures in Home Assistant via Digitransit GraphQL API.
 
-## 📋 What's Included
+## Release
 
-- `sensor_config.yaml` - REST sensors to fetch data from Digitransit API
-- `sensor_config.example.yaml` - Template configuration file with placeholders
-- `template_sensors.yaml` - Template sensors to format the data
-- `lovelace_card.yaml` - 4 dashboard card options
+- Current release: `0.1.0`
+- This is the first public release of the integration.
 
-## 🎯 Features
+## Features
 
-- ✅ **Real-time departures** - Live GPS-tracked bus locations and times
-- ✅ **Delay indicators** - Visual indicator (🔴) when real-time data is available
-- ✅ **Up to 5 departures** per stop (configurable)
-- ✅ **Multiple stops** - Monitor 2 or more bus stops simultaneously
-- ✅ **Auto-refresh** - Updates every 60 seconds (configurable)
-- ✅ **Minutes to departure** - Shows countdown until bus leaves
-- ✅ **All Finnish cities** - Works with any Digitransit-powered region
-- ✅ **Flexible display** - 4 pre-built Lovelace card options
+- Config flow setup from Home Assistant UI
+- Multiple stops per integration entry
+- Configurable number of departures per stop
+- Real-time delay information in attributes
+- 60 second polling interval
+- Works across Digitransit-powered Finnish regions
 
-## 🇫🇮 Supported Cities
+## Requirements
 
-Works with Finnish cities/regions that use Digitransit.
+- Home Assistant 2023.10.0 or newer
+- Digitransit API key from https://digitransit.fi
 
-| Region | Router | Example Stop Code |
-|--------|--------|------------------|
-| **Helsinki (HSL)** | `hsl` | `HSL:1010105` |
-| **Tampere** | `waltti` | `tampere:0001` |
-| **Turku (FOLI)** | `waltti` | `FOLI:1` |
-| **Oulu** | `waltti` | `oulu:1001` |
-| **Vaasa** | `waltti` | `Vaasa:159712` |
-| **Jyväskylä** | `waltti` | `jyvaskyla:1001` |
-| **Kuopio** | `waltti` | `kuopio:1001` |
-| **Lahti** | `waltti` | `lahti:1001` |
-| **Lappeenranta** | `waltti` | `lappeenranta:1` |
-| **Other cities** | `waltti` or `finland` | Varies |
+## Quick Start (Recommended)
 
-## 📦 Requirements
+1. Install this integration into your Home Assistant `custom_components` directory (or via HACS).
+2. Restart Home Assistant.
+3. Go to Settings -> Devices & Services -> Add Integration.
+4. Search for Digitransit.
+5. Enter your API key.
+6. Add one or more stop IDs (for example `HSL:1010105` or `Vaasa:159712`).
 
-- **Home Assistant** 2023.1.0 or newer
-- **Digitransit API key** (free registration at [digitransit.fi](https://digitransit.fi))
-- Built-in integrations: REST, Template
+## Install via HACS Custom Repository
 
-## ⚡ Quick Start
+1. Open HACS in Home Assistant.
+2. Go to Integrations.
+3. Open the menu and select Custom repositories.
+4. Add repository URL: `https://github.com/ValtteriAho/Hassio_Digitransit`
+5. Category: `Integration`
+6. Install `Digitransit` from HACS and restart Home Assistant.
 
-### 1) Get API key
+## Stop IDs and Routers
 
-1. Visit [digitransit.fi](https://digitransit.fi)
-2. Register and create a subscription key
-3. Save your key
+You can find stop IDs from your city route planner:
 
-### 2) Find stop codes
+- HSL: https://reittiopas.hsl.fi
+- Waltti cities: city-specific Digitransit instances (for example `tampere.digitransit.fi`)
 
-- Helsinki (HSL): [reittiopas.hsl.fi](https://reittiopas.hsl.fi)
-- Other cities: city-specific Digitransit site (for example `tampere.digitransit.fi`)
+Router choices in the integration:
 
-Stop codes look like `HSL:1010105` or `Vaasa:159712`.
+- `waltti`
+- `hsl`
+- `tampere`
+- `turku`
+- `jyvaskyla`
+- `oulu`
+- `lahti`
 
-### 3) Configure Home Assistant
+## Entity Output
 
-Add to `configuration.yaml`:
+Each configured stop creates one sensor entity.
 
-```yaml
-rest: !include bussiaikataulu/sensor_config.yaml
-template: !include bussiaikataulu/template_sensors.yaml
-```
+- Sensor state: minutes until next departure (`Now`, `1 min`, `N min`)
+- Sensor attributes: departure list with route, destination, scheduled time, realtime flag, and delay
 
-In `sensor_config.yaml`, replace:
-- `YOUR_API_KEY`
-- `ROUTER` (`hsl`, `waltti`, or `finland`)
-- `CITY:STOPCODE`
+## Legacy YAML Examples
 
-### 4) Restart Home Assistant
+This repository still includes legacy YAML examples:
 
-- Settings → System → Restart
+- `sensor_config.yaml`
+- `sensor_config.example.yaml`
+- `template_sensors.yaml`
+- `lovelace_card.yaml`
 
-### 5) Add dashboard card
+These are examples only. The maintained setup path is the config-flow custom integration.
 
-- Use one of the examples from `lovelace_card.yaml`
+## Troubleshooting
 
-## 📊 Available Sensors
+If entities do not appear:
 
-### Raw data sensors
-- `sensor.bussi_pysakki_1_raw`
-- `sensor.bussi_pysakki_2_raw`
+1. Confirm the integration is loaded under Settings -> Devices & Services.
+2. Confirm API key is valid.
+3. Confirm stop IDs exist in Digitransit.
+4. Check logs under Settings -> System -> Logs.
 
-### Formatted sensors
-- `sensor.bussiaikataulu_pysakki_1`
-- `sensor.bussiaikataulu_pysakki_2`
-- `sensor.bussiaikataulu_yhdistetty`
-
-Formatted output pattern:
-
-`[Route] → [Destination] | [Time] ([Minutes] min) [🔴 if real-time]`
-
-## 🔧 Troubleshooting
-
-### Sensors not appearing
-
-1. Verify `configuration.yaml` includes:
-   ```yaml
-   rest: !include bussiaikataulu/sensor_config.yaml
-   template: !include bussiaikataulu/template_sensors.yaml
-   ```
-2. Restart Home Assistant
-3. Check logs in Settings → System → Logs
-
-### No departures
-
-1. Verify stop code format and value
-2. Verify router in API URL
-3. Verify API key header value
-
-## 📄 Documentation
+## Documentation
 
 - Installation details: `INSTALL.md`
 - Changelog: `CHANGELOG.md`
-- HACS/repository info: `info.md`
+- Repository info: `info.md`
 
-## 🐛 Support
+## Support
 
-- Report issues: `https://github.com/valtteri-aho/Hassio-digitransit/issues`
-- Home Assistant community: `https://community.home-assistant.io/`
+- Issues: https://github.com/valtteri-aho/Hassio-digitransit/issues
+- Home Assistant Community: https://community.home-assistant.io/
