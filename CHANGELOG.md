@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.4] - 2026-06-11
+
+### Changed
+- Clarified in docs that Waltti stop IDs require city/feed prefix with correct capitalization (e.g., `Vaasa:159712` not `vaasa:159712`).
+- Fixed config flow form field label for "add another stop" checkbox to display properly instead of raw key name.
+
 ## [0.1.3] - 2026-06-10
 
 ### Fixed
@@ -58,3 +64,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.1.1]: https://github.com/ValtteriAho/Hassio_Digitransit/releases/tag/v0.1.1
 [0.1.2]: https://github.com/ValtteriAho/Hassio_Digitransit/releases/tag/v0.1.2
 [0.1.3]: https://github.com/ValtteriAho/Hassio_Digitransit/releases/tag/v0.1.3
+[0.1.4]: https://github.com/ValtteriAho/Hassio_Digitransit/releases/tag/v0.1.4

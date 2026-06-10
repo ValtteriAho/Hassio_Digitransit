@@ -22,7 +22,10 @@
       },
       "add_another": {
         "title": "Add Another Stop?",
-        "description": "You have added {stops_added} stop(s). Do you want to add another one?"
+        "description": "You have added {stops_added} stop(s). Do you want to add another one?",
+        "data": {
+          "add_another": "Add another stop"
+        }
       }
     },
     "error": {
