@@ -166,7 +166,7 @@ class DigitransitConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     ),
                     errors=errors,
                     description_placeholders={
-                        "example": "Vaasa:159712 or Vaasa:302812"
+                        "example": "HSL:1010105"
                     },
                 )
             
@@ -209,14 +209,12 @@ class DigitransitConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 }
             ),
             errors=errors,
-            description_placeholders={
-                        "example": "HSL:1010105"
-            },
+            description_placeholders={"example": "HSL:1010105"},
         )
 
     async def async_step_add_another(
         self, user_input: dict[str, Any] | None = None
-                "example": "HSL:1010105"
+    ) -> FlowResult:
         """Ask if user wants to add another stop."""
         if user_input is not None:
             if user_input.get("add_another"):
