@@ -6,7 +6,7 @@ This guide covers the recommended setup for the Digitransit custom integration.
 
 - Home Assistant 2023.10.0 or newer
 - Digitransit API subscription key (https://portal-api.digitransit.fi/)
-- Bus stop IDs (for example `HSL:1010105`, `Vaasa:159712`)
+- Bus stop IDs (for example `HSL:1010105`)
 
 ## Install via HACS (Recommended)
 
@@ -29,12 +29,14 @@ This guide covers the recommended setup for the Digitransit custom integration.
 2. Click Add Integration.
 3. Search for Digitransit.
 4. Enter Digitransit API subscription key.
-5. Add stop IDs and select router for each stop.
+5. Add stop IDs and select the matching router for each stop.
 
 ## Finding Stop IDs
 
 - HSL region: https://reittiopas.hsl.fi
 - Waltti/city planners: city-specific Digitransit sites (for example `tampere.digitransit.fi`)
+
+The stop ID must match the selected router. For example, an HSL stop ID must use the `hsl` router.
 
 ## Verification
 

@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-06-10
+
+### Fixed
+- Stop validation now checks the selected router instead of probing unrelated routers.
+- Config flow guidance now uses supported stop ID examples and clearer router-specific messaging.
+
+### Changed
+- Updated integration UI text and docs to match the Digitransit API portal and router-specific stop setup.
+
 ## [0.1.1] - 2026-06-10
 
 ### Changed
@@ -41,3 +50,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [0.1.0]: https://github.com/ValtteriAho/Hassio_Digitransit/releases/tag/v0.1.0
 [0.1.1]: https://github.com/ValtteriAho/Hassio_Digitransit/releases/tag/v0.1.1
+[0.1.2]: https://github.com/ValtteriAho/Hassio_Digitransit/releases/tag/v0.1.2

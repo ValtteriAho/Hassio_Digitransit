@@ -7,7 +7,7 @@ Real-time Finnish public transit departures in Home Assistant via Digitransit Gr
 
 ## Release
 
-- Current release: `0.1.1`
+- Current release: `0.1.2`
 - This is the first public release of the integration.
 
 ## Features
@@ -31,7 +31,7 @@ Real-time Finnish public transit departures in Home Assistant via Digitransit Gr
 3. Go to Settings -> Devices & Services -> Add Integration.
 4. Search for Digitransit.
 5. Enter your Digitransit API subscription key.
-6. Add one or more stop IDs (for example `HSL:1010105` or `Vaasa:159712`).
+6. Add one or more stop IDs (for example `HSL:1010105`) and choose the matching router.
 
 ## Install via HACS Custom Repository
 
@@ -48,6 +48,8 @@ You can find stop IDs from your city route planner:
 
 - HSL: https://reittiopas.hsl.fi
 - Waltti cities: city-specific Digitransit instances (for example `tampere.digitransit.fi`)
+
+The stop ID must belong to the router you select in the integration. An HSL stop ID must use the `hsl` router.
 
 Router choices in the integration:
 

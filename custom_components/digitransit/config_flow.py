@@ -51,7 +51,12 @@ async def validate_api_key(hass: HomeAssistant, api_key: str) -> bool:
         return False
 
 
-async def validate_stop_id(hass: HomeAssistant, api_key: str, stop_id: str) -> dict[str, str] | None:
+async def validate_stop_id(
+    hass: HomeAssistant,
+    api_key: str,
+    stop_id: str,
+    router: str,
+) -> dict[str, str] | None:
     """Validate stop ID and return stop info."""
     session = async_get_clientsession(hass)
     headers = {
@@ -59,28 +64,23 @@ async def validate_stop_id(hass: HomeAssistant, api_key: str, stop_id: str) -> d
         "digitransit-subscription-key": api_key,
     }
     query = f'{{"query": "{{ stop(id: \\"{stop_id}\\") {{ name code gtfsId }} }}"}}'
+    base_url = API_ROUTERS.get(router, API_ROUTERS[DEFAULT_ROUTER])
     
     try:
-        # Try default router first, then all others.
-        router_urls = [API_ROUTERS[DEFAULT_ROUTER]] + [
-            url for name, url in API_ROUTERS.items() if name != DEFAULT_ROUTER
-        ]
+        async with session.post(
+            base_url, data=query, headers=headers, timeout=10
+        ) as response:
+            if response.status != 200:
+                return None
 
-        for base_url in router_urls:
-            async with session.post(
-                base_url, data=query, headers=headers, timeout=10
-            ) as response:
-                if response.status != 200:
-                    continue
-
-                data = await response.json()
-                stop = data.get("data", {}).get("stop")
-                if stop:
-                    return {
-                        "name": stop.get("name", "Unknown"),
-                        "code": stop.get("code", ""),
-                        "gtfs_id": stop.get("gtfsId", stop_id),
-                    }
+            data = await response.json()
+            stop = data.get("data", {}).get("stop")
+            if stop:
+                return {
+                    "name": stop.get("name", "Unknown"),
+                    "code": stop.get("code", ""),
+                    "gtfs_id": stop.get("gtfsId", stop_id),
+                }
     except (aiohttp.ClientError, TimeoutError):
         pass
     return None
@@ -171,7 +171,13 @@ class DigitransitConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 )
             
             # Validate stop ID
-            stop_info = await validate_stop_id(self.hass, self.api_key, stop_id)
+            selected_router = user_input.get(CONF_ROUTER, DEFAULT_ROUTER)
+            stop_info = await validate_stop_id(
+                self.hass,
+                self.api_key,
+                stop_id,
+                selected_router,
+            )
             
             if stop_info:
                 # Add stop to list
@@ -182,7 +188,7 @@ class DigitransitConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         CONF_NUM_DEPARTURES: user_input.get(
                             CONF_NUM_DEPARTURES, DEFAULT_NUM_DEPARTURES
                         ),
-                        CONF_ROUTER: user_input.get(CONF_ROUTER, "waltti"),
+                        CONF_ROUTER: selected_router,
                     }
                 )
                 
@@ -204,13 +210,13 @@ class DigitransitConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             ),
             errors=errors,
             description_placeholders={
-                "example": "Vaasa:159712 or Vaasa:302812"
+                        "example": "HSL:1010105"
             },
         )
 
     async def async_step_add_another(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
+                "example": "HSL:1010105"
         """Ask if user wants to add another stop."""
         if user_input is not None:
             if user_input.get("add_another"):
