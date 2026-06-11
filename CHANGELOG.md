@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.11] - 2026-06-11
+
+### Changed
+- Updated `lovelace_card.yaml` examples to use v0.1.10+ attributes (`departures`, `status`, `status_color`, `status_icon`) and include a cleaner Next 3 view.
+
 ## [0.1.10] - 2026-06-11
 
 ### Added
@@ -115,3 +120,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.1.8]: https://github.com/ValtteriAho/Hassio_Digitransit/releases/tag/v0.1.8
 [0.1.9]: https://github.com/ValtteriAho/Hassio_Digitransit/releases/tag/v0.1.9
 [0.1.10]: https://github.com/ValtteriAho/Hassio_Digitransit/releases/tag/v0.1.10
+[0.1.11]: https://github.com/ValtteriAho/Hassio_Digitransit/releases/tag/v0.1.11

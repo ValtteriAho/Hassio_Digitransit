@@ -7,7 +7,7 @@ Real-time Finnish public transit departures in Home Assistant via Digitransit Gr
 
 ## Release
 
-- Current release: `0.1.10`
+- Current release: `0.1.11`
 - This is the first public release of the integration.
 
 ## Features

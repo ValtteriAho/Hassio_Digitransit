@@ -1,97 +1,49 @@
-# Lovelace Dashboard Kortti - Bussiaikataulut
-# Lisää tämä Lovelace dashboardiin (käyttöliittymä)
-# Voit muokata ulkoasua (type, card-mod jne.)
+# Digitransit Lovelace examples (v0.1.10+)
+#
+# Replace the entity IDs below with your own sensor IDs from Home Assistant.
+# Example placeholders used:
+# - sensor.melaniementie_kaarantie_b
+# - sensor.melaniementie_kaarantie_b_next_3
 
-# KOMPAKTI VERSIO - Molemmat pysäkit yhdessä kortissa
-type: vertical-stack
-title: 🚌 Bussiaikataulut
-cards:
-  - type: markdown
-    content: |
-      **{{ state_attr('sensor.bussiaikataulu_pysakki_1', 'pysakki_nimi') }}**
-      Seuraava: **{{ states('sensor.bussiaikataulu_pysakki_1') }}**
-      {% for i in range(1, 4) %}
-      {% set lahto = state_attr('sensor.bussiaikataulu_pysakki_1', 'lahto_' ~ i) %}
-      {% if lahto %}{{ lahto }}
-      {% endif %}{% endfor %}
-      
-      ---
-      
-      **{{ state_attr('sensor.bussiaikataulu_pysakki_2', 'pysakki_nimi') }}**
-      Seuraava: **{{ states('sensor.bussiaikataulu_pysakki_2') }}**
-      {% for i in range(1, 4) %}
-      {% set lahto = state_attr('sensor.bussiaikataulu_pysakki_2', 'lahto_' ~ i) %}
-      {% if lahto %}{{ lahto }}
-      {% endif %}{% endfor %}
-
----
-
-# VAIHTOEHTO 2: Kompakti yhdistetty näkymä
+# Option 1: Clean Markdown card with colored status dots
 type: markdown
-title: 🚌 Bussiaikataulut
+title: "Bus departures"
 content: |
-  {{ state_attr('sensor.bussiaikataulu_yhdistetty', 'kaikki_lahdot') }}
+  {% set e = 'sensor.melaniementie_kaarantie_b' %}
+  {% set deps = state_attr(e, 'departures') or [] %}
+
+  **{{ state_attr(e, 'stop_name') or 'Stop' }}**
+  Next: **{{ states(e) }}**
+
+  {% for dep in deps[:3] %}
+  {% set color = dep.status_color or 'gray' %}
+  {% if color == 'green' %}{% set dot = '🟢' %}
+  {% elif color == 'red' %}{% set dot = '🔴' %}
+  {% elif color == 'dodgerblue' %}{% set dot = '🔵' %}
+  {% else %}{% set dot = '⚪' %}{% endif %}
+  {{ dot }} **{{ dep.route }}** → {{ dep.destination }} at {{ dep.scheduled_time }} ({{ dep.minutes }} min) - {{ dep.status }}
+  {% endfor %}
 
 ---
 
-# VAIHTOEHTO 3: Entities-kortti (yksinkertaisempi)
+# Option 2: Entities card for quick overview
 type: entities
-title: 🚌 Bussiaikataulut
+title: "Bus departures"
 show_header_toggle: false
 entities:
-  - entity: sensor.bussiaikataulu_pysakki_1
-    name: Pysäkki 1 - Seuraava
-    icon: mdi:bus-clock
+  - entity: sensor.melaniementie_kaarantie_b
+    name: Next departure
+  - entity: sensor.melaniementie_kaarantie_b_next_3
+    name: Next 3 times
   - type: attribute
-    entity: sensor.bussiaikataulu_pysakki_1
+    entity: sensor.melaniementie_kaarantie_b
     attribute: lahto_1
-    name: "  1."
+    name: "Departure 1"
   - type: attribute
-    entity: sensor.bussiaikataulu_pysakki_1
+    entity: sensor.melaniementie_kaarantie_b
     attribute: lahto_2
-    name: "  2."
+    name: "Departure 2"
   - type: attribute
-    entity: sensor.bussiaikataulu_pysakki_1
+    entity: sensor.melaniementie_kaarantie_b
     attribute: lahto_3
-    name: "  3."
-  - type: divider
-  - entity: sensor.bussiaikataulu_pysakki_2
-    name: Pysäkki 2 - Seuraava
-    icon: mdi:bus-clock
-  - type: attribute
-    entity: sensor.bussiaikataulu_pysakki_2
-    attribute: lahto_1
-    name: "  1."
-  - type: attribute
-    entity: sensor.bussiaikataulu_pysakki_2
-    attribute: lahto_2
-    name: "  2."
-  - type: attribute
-    entity: sensor.bussiaikataulu_pysakki_2
-    attribute: lahto_3
-    name: "  3."
-
----
-
-# VAIHTOEHTO 4: Conditional card - Näytä vain arkiaamuisin
-type: conditional
-conditions:
-  - condition: state
-    entity: binary_sensor.workday_sensor  # Vaatii workday integraation
-    state: "on"
-  - condition: time
-    after: "06:00:00"
-    before: "10:00:00"
-card:
-  type: markdown
-  title: 🚌 Koulubussit tänään
-  content: |
-    **{{ state_attr('sensor.bussiaikataulu_pysakki_1', 'pysakki_nimi') }}**
-    
-    {% for i in range(1, 4) %}
-    {% set attr_name = 'lahto_' ~ i %}
-    {% set lahto = state_attr('sensor.bussiaikataulu_pysakki_1', attr_name) %}
-    {% if lahto %}
-    {{ i }}. {{ lahto }}
-    {% endif %}
-    {% endfor %}
+    name: "Departure 3"
