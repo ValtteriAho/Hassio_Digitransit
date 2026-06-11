@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+import math
 import logging
 
 from homeassistant.components.sensor import SensorEntity
@@ -39,6 +40,7 @@ async def async_setup_entry(
     entities = []
     for stop in entry.data[CONF_STOPS]:
         entities.append(DigitransitSensor(coordinator, stop))
+        entities.append(DigitransitNextThreeSensor(coordinator, stop))
     
     async_add_entities(entities)
 
@@ -123,18 +125,29 @@ class DigitransitSensor(CoordinatorEntity, SensorEntity):
         attributes[ATTR_DEPARTURES] = departure_list
         
         # Next departure info
-        if departure_list:
-            attributes[ATTR_NEXT_DEPARTURE] = departure_list[0]
+        next_departure = self._get_next_departure(departures)
+        if next_departure:
+            attributes[ATTR_NEXT_DEPARTURE] = next_departure
         
         return attributes
 
     def _get_next_departure(self, departures: list) -> dict | None:
         """Get the next departure."""
+        upcoming = self._get_upcoming_departures(departures, 1)
+        return upcoming[0] if upcoming else None
+
+    def _get_upcoming_departures(self, departures: list, limit: int | None = None) -> list[dict]:
+        """Return processed upcoming departures sorted by departure time."""
+        upcoming: list[dict] = []
         for departure_data in departures:
             departure = self._process_departure(departure_data)
             if departure and departure["minutes"] >= 0:
-                return departure
-        return None
+                upcoming.append(departure)
+
+        upcoming.sort(key=lambda item: item.get("departure_time", ""))
+        if limit is None:
+            return upcoming
+        return upcoming[:limit]
 
     def _process_departure(self, departure_data: dict) -> dict | None:
         """Process a single departure."""
@@ -149,9 +162,13 @@ class DigitransitSensor(CoordinatorEntity, SensorEntity):
             departure_time = datetime.fromtimestamp(departure_timestamp, tz=dt_util.DEFAULT_TIME_ZONE)
             now = dt_util.now()
             
-            # Calculate minutes until departure
-            time_diff = departure_time - now
-            minutes = int(time_diff.total_seconds() / 60)
+            # Calculate minutes until departure.
+            # Use floor so recently departed vehicles are not shown as "Now".
+            seconds_to_departure = (departure_time - now).total_seconds()
+            if 0 <= seconds_to_departure < 60:
+                minutes = 0
+            else:
+                minutes = math.floor(seconds_to_departure / 60)
             
             # Calculate delay
             delay_seconds = realtime - scheduled
@@ -201,3 +218,55 @@ class DigitransitSensor(CoordinatorEntity, SensorEntity):
     def available(self) -> bool:
         """Return if entity is available."""
         return self.coordinator.last_update_success and self._stop_id in self.coordinator.data
+
+
+class DigitransitNextThreeSensor(DigitransitSensor):
+    """Representation of next three departures as a compact sensor state."""
+
+    _attr_icon = "mdi:bus-clock"
+
+    def __init__(self, coordinator, stop_config: dict) -> None:
+        """Initialize the next three departures sensor."""
+        super().__init__(coordinator, stop_config)
+        self._attr_unique_id = f"{DOMAIN}_{self._stop_id}_next_three"
+        self._attr_name = f"{self._stop_name} Next 3"
+
+    @property
+    def native_value(self) -> str | None:
+        """Return a compact text with next three departure times."""
+        if not self.coordinator.data or self._stop_id not in self.coordinator.data:
+            return None
+
+        stop_data = self.coordinator.data[self._stop_id]
+        departures = stop_data.get("stoptimesWithoutPatterns", [])
+        if not departures:
+            return None
+
+        upcoming = self._get_upcoming_departures(departures, 3)
+        if not upcoming:
+            return "No departures"
+
+        return " | ".join(dep[ATTR_SCHEDULED_TIME] for dep in upcoming)
+
+    @property
+    def extra_state_attributes(self) -> dict:
+        """Return details for next three upcoming departures."""
+        if not self.coordinator.data or self._stop_id not in self.coordinator.data:
+            return {}
+
+        stop_data = self.coordinator.data[self._stop_id]
+        departures = stop_data.get("stoptimesWithoutPatterns", [])
+        upcoming = self._get_upcoming_departures(departures, 3)
+
+        attributes = {
+            ATTR_STOP_CODE: stop_data.get("code", ""),
+            "stop_id": self._stop_id,
+            "stop_name": stop_data.get("name", self._stop_name),
+            "router": self._router,
+            ATTR_DEPARTURES: upcoming,
+        }
+
+        for idx, departure in enumerate(upcoming):
+            attributes[f"departure_{idx + 1}"] = self._format_departure(departure)
+
+        return attributes

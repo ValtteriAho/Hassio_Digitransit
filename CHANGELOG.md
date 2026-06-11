@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.7] - 2026-06-11
+
+### Added
+- Added a second sensor per stop for a compact view of the next 3 upcoming departures in state format (`HH:MM | HH:MM | HH:MM`).
+
+### Fixed
+- Improved departure filtering so upcoming departure selection consistently uses future departures.
+
 ## [0.1.6] - 2026-06-11
 
 ### Fixed
@@ -77,3 +85,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.1.4]: https://github.com/ValtteriAho/Hassio_Digitransit/releases/tag/v0.1.4
 [0.1.5]: https://github.com/ValtteriAho/Hassio_Digitransit/releases/tag/v0.1.5
 [0.1.6]: https://github.com/ValtteriAho/Hassio_Digitransit/releases/tag/v0.1.6
+[0.1.7]: https://github.com/ValtteriAho/Hassio_Digitransit/releases/tag/v0.1.7
