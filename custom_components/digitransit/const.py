@@ -17,6 +17,7 @@ ATTR_DESTINATION = "destination"
 ATTR_SCHEDULED_TIME = "scheduled_time"
 ATTR_REALTIME = "realtime"
 ATTR_DELAY = "delay"
+ATTR_STATUS = "status"
 
 DEFAULT_NUM_DEPARTURES = 5
 DEFAULT_SCAN_INTERVAL = 60

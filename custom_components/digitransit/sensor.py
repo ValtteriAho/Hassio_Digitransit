@@ -24,6 +24,7 @@ from .const import (
     ATTR_SCHEDULED_TIME,
     ATTR_REALTIME,
     ATTR_DELAY,
+    ATTR_STATUS,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -173,6 +174,15 @@ class DigitransitSensor(CoordinatorEntity, SensorEntity):
             # Calculate delay
             delay_seconds = realtime - scheduled
             delay_minutes = int(delay_seconds / 60)
+
+            if not is_realtime:
+                status = "Scheduled"
+            elif delay_minutes > 0:
+                status = f"Late by {delay_minutes} min"
+            elif delay_minutes < 0:
+                status = f"Early by {abs(delay_minutes)} min"
+            else:
+                status = "On time"
             
             # Get route and destination info
             trip = departure_data.get("trip", {})
@@ -187,6 +197,7 @@ class DigitransitSensor(CoordinatorEntity, SensorEntity):
                 "minutes": minutes,
                 ATTR_REALTIME: is_realtime,
                 ATTR_DELAY: delay_minutes if is_realtime else 0,
+                ATTR_STATUS: status,
                 "departure_time": departure_time.isoformat(),
             }
             
@@ -202,17 +213,18 @@ class DigitransitSensor(CoordinatorEntity, SensorEntity):
         minutes = departure["minutes"]
         is_realtime = departure[ATTR_REALTIME]
         delay = departure[ATTR_DELAY]
+        status = departure.get(ATTR_STATUS, "")
         
         # Format: "3 → Palosaari | 08:45 (12 min) 🔴"
         realtime_indicator = " 🔴" if is_realtime else ""
         delay_text = f" (+{delay} min)" if delay > 0 else f" ({delay} min)" if delay < 0 else ""
         
         if minutes < 0:
-            return f"{route} → {destination} | {time} (past){realtime_indicator}"
+            return f"{route} → {destination} | {time} (past){realtime_indicator} [{status}]"
         elif minutes == 0:
-            return f"{route} → {destination} | {time} (now){realtime_indicator}{delay_text}"
+            return f"{route} → {destination} | {time} (now){realtime_indicator}{delay_text} [{status}]"
         else:
-            return f"{route} → {destination} | {time} ({minutes} min){realtime_indicator}{delay_text}"
+            return f"{route} → {destination} | {time} ({minutes} min){realtime_indicator}{delay_text} [{status}]"
 
     @property
     def available(self) -> bool:
