@@ -11,8 +11,11 @@ title: "Bus departures"
 content: |
   {% set e = 'sensor.melaniementie_kaarantie_b' %}
   {% set deps = state_attr(e, 'departures') or [] %}
+  {% set full_name = state_attr(e, 'stop_name') or 'Stop' %}
+  {% set first_part = full_name.split(' / ')[0].strip() if ' / ' in full_name else full_name %}
+  {% set stop_name = first_part[:24] ~ '...' if first_part | length > 24 else first_part %}
 
-  **{{ state_attr(e, 'stop_name') or 'Stop' }}**
+  **{{ stop_name }}**
   Next: **{{ states(e) }}**
 
   {% for dep in deps[:3] %}
@@ -32,9 +35,9 @@ title: "Bus departures"
 show_header_toggle: false
 entities:
   - entity: sensor.melaniementie_kaarantie_b
-    name: Next departure
+    name: Stop
   - entity: sensor.melaniementie_kaarantie_b_next_3
-    name: Next 3 times
+    name: Next 3
   - type: attribute
     entity: sensor.melaniementie_kaarantie_b
     attribute: lahto_1

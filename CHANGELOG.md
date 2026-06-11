@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.12] - 2026-06-11
+
+### Fixed
+- Fixed duplicated stop names in Home Assistant entity display by using functional entity names (`Next departure`, `Next 3 departures`) instead of repeating stop name in both device and entity labels.
+
 ## [0.1.11] - 2026-06-11
 
 ### Changed
@@ -121,3 +126,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.1.9]: https://github.com/ValtteriAho/Hassio_Digitransit/releases/tag/v0.1.9
 [0.1.10]: https://github.com/ValtteriAho/Hassio_Digitransit/releases/tag/v0.1.10
 [0.1.11]: https://github.com/ValtteriAho/Hassio_Digitransit/releases/tag/v0.1.11
+[0.1.12]: https://github.com/ValtteriAho/Hassio_Digitransit/releases/tag/v0.1.12

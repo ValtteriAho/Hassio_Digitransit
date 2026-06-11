@@ -77,7 +77,7 @@ class DigitransitSensor(CoordinatorEntity, SensorEntity):
         self._router = stop_config.get("router", "waltti")
         
         self._attr_unique_id = f"{DOMAIN}_{self._stop_id}"
-        self._attr_name = self._stop_name
+        self._attr_name = "Next departure"
 
     @property
     def native_value(self) -> str | None:
@@ -298,7 +298,7 @@ class DigitransitNextThreeSensor(DigitransitSensor):
         """Initialize the next three departures sensor."""
         super().__init__(coordinator, stop_config)
         self._attr_unique_id = f"{DOMAIN}_{self._stop_id}_next_three"
-        self._attr_name = f"{self._stop_name} Next 3"
+        self._attr_name = "Next 3 departures"
 
     @property
     def native_value(self) -> str | None:
