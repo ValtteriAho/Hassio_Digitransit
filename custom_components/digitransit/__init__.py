@@ -101,28 +101,7 @@ class DigitransitCoordinator(DataUpdateCoordinator):
         # Determine the API URL based on router
         api_url = API_ROUTERS.get(router, API_ROUTERS[DEFAULT_ROUTER])
         
-        query = f"""{{
-            "query": "{{
-                stop(id: \\"{stop_id}\\") {{
-                    name
-                    code
-                    gtfsId
-                    stoptimesWithoutPatterns(numberOfDepartures: {num_departures}) {{
-                        scheduledDeparture
-                        realtimeDeparture
-                        realtime
-                        serviceDay
-                        headsign
-                        trip {{
-                            route {{
-                                shortName
-                                longName
-                            }}
-                        }}
-                    }}
-                }}
-            }}"
-        }}"""
+        query = f'{{"query": "{{ stop(id: \\"{stop_id}\\") {{ name code gtfsId stoptimesWithoutPatterns(numberOfDepartures: {num_departures}) {{ scheduledDeparture realtimeDeparture realtime serviceDay headsign trip {{ route {{ shortName longName }} }} }} }} }}"}}'
         
         try:
             async with self.session.post(

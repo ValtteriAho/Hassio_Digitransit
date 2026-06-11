@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.5] - 2026-06-11
+
+### Fixed
+- **Critical**: Fixed GraphQL query formatting that was causing 400 Bad Request errors. Multi-line query strings were creating invalid JSON. Reformatted to single-line query matching the working config flow format.
+
 ## [0.1.4] - 2026-06-11
 
 ### Changed
@@ -65,3 +70,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.1.2]: https://github.com/ValtteriAho/Hassio_Digitransit/releases/tag/v0.1.2
 [0.1.3]: https://github.com/ValtteriAho/Hassio_Digitransit/releases/tag/v0.1.3
 [0.1.4]: https://github.com/ValtteriAho/Hassio_Digitransit/releases/tag/v0.1.4
+[0.1.5]: https://github.com/ValtteriAho/Hassio_Digitransit/releases/tag/v0.1.5
