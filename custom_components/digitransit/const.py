@@ -19,6 +19,7 @@ ATTR_REALTIME = "realtime"
 ATTR_DELAY = "delay"
 ATTR_STATUS = "status"
 ATTR_STATUS_ICON = "status_icon"
+ATTR_STATUS_COLOR = "status_color"
 
 DEFAULT_NUM_DEPARTURES = 5
 DEFAULT_SCAN_INTERVAL = 60

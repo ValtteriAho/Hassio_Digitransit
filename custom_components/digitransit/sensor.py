@@ -26,6 +26,7 @@ from .const import (
     ATTR_DELAY,
     ATTR_STATUS,
     ATTR_STATUS_ICON,
+    ATTR_STATUS_COLOR,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -58,6 +59,13 @@ class DigitransitSensor(CoordinatorEntity, SensorEntity):
         "Late": "mdi:clock-alert-outline",
         "Early": "mdi:clock-fast",
         "Scheduled": "mdi:clock-outline",
+    }
+
+    _STATUS_COLORS = {
+        "On time": "green",
+        "Late": "red",
+        "Early": "dodgerblue",
+        "Scheduled": "gray",
     }
 
     def __init__(self, coordinator, stop_config: dict) -> None:
@@ -218,12 +226,16 @@ class DigitransitSensor(CoordinatorEntity, SensorEntity):
 
             if status.startswith("Late"):
                 status_icon = self._STATUS_ICONS["Late"]
+                status_color = self._STATUS_COLORS["Late"]
             elif status.startswith("Early"):
                 status_icon = self._STATUS_ICONS["Early"]
+                status_color = self._STATUS_COLORS["Early"]
             elif status == "On time":
                 status_icon = self._STATUS_ICONS["On time"]
+                status_color = self._STATUS_COLORS["On time"]
             else:
                 status_icon = self._STATUS_ICONS["Scheduled"]
+                status_color = self._STATUS_COLORS["Scheduled"]
             
             # Get route and destination info
             trip = departure_data.get("trip", {})
@@ -240,6 +252,7 @@ class DigitransitSensor(CoordinatorEntity, SensorEntity):
                 ATTR_DELAY: delay_minutes if is_realtime else 0,
                 ATTR_STATUS: status,
                 ATTR_STATUS_ICON: status_icon,
+                ATTR_STATUS_COLOR: status_color,
                 "departure_time": departure_time.isoformat(),
             }
             
@@ -257,17 +270,18 @@ class DigitransitSensor(CoordinatorEntity, SensorEntity):
         delay = departure[ATTR_DELAY]
         status = departure.get(ATTR_STATUS, "")
         status_icon = departure.get(ATTR_STATUS_ICON, "mdi:clock-outline")
+        status_color = departure.get(ATTR_STATUS_COLOR, "gray")
         
         # Format: "3 → Palosaari | 08:45 (12 min) 🔴"
         realtime_indicator = " 🔴" if is_realtime else ""
         delay_text = f" (+{delay} min)" if delay > 0 else f" ({delay} min)" if delay < 0 else ""
         
         if minutes < 0:
-            return f"{route} → {destination} | {time} (past){realtime_indicator} [{status_icon}] [{status}]"
+            return f"{route} → {destination} | {time} (past){realtime_indicator} [{status_icon}] [{status}] [{status_color}]"
         elif minutes == 0:
-            return f"{route} → {destination} | {time} (now){realtime_indicator}{delay_text} [{status_icon}] [{status}]"
+            return f"{route} → {destination} | {time} (now){realtime_indicator}{delay_text} [{status_icon}] [{status}] [{status_color}]"
         else:
-            return f"{route} → {destination} | {time} ({minutes} min){realtime_indicator}{delay_text} [{status_icon}] [{status}]"
+            return f"{route} → {destination} | {time} ({minutes} min){realtime_indicator}{delay_text} [{status_icon}] [{status}] [{status_color}]"
 
     @property
     def available(self) -> bool:
