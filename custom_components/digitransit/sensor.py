@@ -25,6 +25,7 @@ from .const import (
     ATTR_REALTIME,
     ATTR_DELAY,
     ATTR_STATUS,
+    ATTR_STATUS_ICON,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -51,6 +52,13 @@ class DigitransitSensor(CoordinatorEntity, SensorEntity):
 
     _attr_has_entity_name = True
     _attr_icon = "mdi:bus"
+
+    _STATUS_ICONS = {
+        "On time": "mdi:clock-check-outline",
+        "Late": "mdi:clock-alert-outline",
+        "Early": "mdi:clock-fast",
+        "Scheduled": "mdi:clock-outline",
+    }
 
     def __init__(self, coordinator, stop_config: dict) -> None:
         """Initialize the sensor."""
@@ -97,6 +105,30 @@ class DigitransitSensor(CoordinatorEntity, SensorEntity):
             model="Public Transit Stop",
             name=self._stop_name,
         )
+
+    @property
+    def icon(self) -> str:
+        """Return status-based icon for the next upcoming departure."""
+        if not self.coordinator.data or self._stop_id not in self.coordinator.data:
+            return self._attr_icon
+
+        stop_data = self.coordinator.data[self._stop_id]
+        departures = stop_data.get("stoptimesWithoutPatterns", [])
+        next_departure = self._get_next_departure(departures)
+        if not next_departure:
+            return self._attr_icon
+
+        status = next_departure.get(ATTR_STATUS, "")
+        if status.startswith("Late"):
+            return self._STATUS_ICONS["Late"]
+        if status.startswith("Early"):
+            return self._STATUS_ICONS["Early"]
+        if status == "On time":
+            return self._STATUS_ICONS["On time"]
+        if status == "Scheduled":
+            return self._STATUS_ICONS["Scheduled"]
+
+        return self._attr_icon
 
     @property
     def extra_state_attributes(self) -> dict:
@@ -183,6 +215,15 @@ class DigitransitSensor(CoordinatorEntity, SensorEntity):
                 status = f"Early by {abs(delay_minutes)} min"
             else:
                 status = "On time"
+
+            if status.startswith("Late"):
+                status_icon = self._STATUS_ICONS["Late"]
+            elif status.startswith("Early"):
+                status_icon = self._STATUS_ICONS["Early"]
+            elif status == "On time":
+                status_icon = self._STATUS_ICONS["On time"]
+            else:
+                status_icon = self._STATUS_ICONS["Scheduled"]
             
             # Get route and destination info
             trip = departure_data.get("trip", {})
@@ -198,6 +239,7 @@ class DigitransitSensor(CoordinatorEntity, SensorEntity):
                 ATTR_REALTIME: is_realtime,
                 ATTR_DELAY: delay_minutes if is_realtime else 0,
                 ATTR_STATUS: status,
+                ATTR_STATUS_ICON: status_icon,
                 "departure_time": departure_time.isoformat(),
             }
             
@@ -214,17 +256,18 @@ class DigitransitSensor(CoordinatorEntity, SensorEntity):
         is_realtime = departure[ATTR_REALTIME]
         delay = departure[ATTR_DELAY]
         status = departure.get(ATTR_STATUS, "")
+        status_icon = departure.get(ATTR_STATUS_ICON, "mdi:clock-outline")
         
         # Format: "3 → Palosaari | 08:45 (12 min) 🔴"
         realtime_indicator = " 🔴" if is_realtime else ""
         delay_text = f" (+{delay} min)" if delay > 0 else f" ({delay} min)" if delay < 0 else ""
         
         if minutes < 0:
-            return f"{route} → {destination} | {time} (past){realtime_indicator} [{status}]"
+            return f"{route} → {destination} | {time} (past){realtime_indicator} [{status_icon}] [{status}]"
         elif minutes == 0:
-            return f"{route} → {destination} | {time} (now){realtime_indicator}{delay_text} [{status}]"
+            return f"{route} → {destination} | {time} (now){realtime_indicator}{delay_text} [{status_icon}] [{status}]"
         else:
-            return f"{route} → {destination} | {time} ({minutes} min){realtime_indicator}{delay_text} [{status}]"
+            return f"{route} → {destination} | {time} ({minutes} min){realtime_indicator}{delay_text} [{status_icon}] [{status}]"
 
     @property
     def available(self) -> bool:

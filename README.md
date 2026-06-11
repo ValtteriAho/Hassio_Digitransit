@@ -7,7 +7,7 @@ Real-time Finnish public transit departures in Home Assistant via Digitransit Gr
 
 ## Release
 
-- Current release: `0.1.8`
+- Current release: `0.1.9`
 - This is the first public release of the integration.
 
 ## Features
@@ -67,6 +67,7 @@ Each configured stop creates one sensor entity.
 
 - Sensor state: minutes until next departure (`Now`, `1 min`, `N min`)
 - Sensor attributes: departure list with route, destination, scheduled time, realtime flag, delay, and status (`On time`, `Late`, `Early`, `Scheduled`)
+- Sensor icon automatically changes by next departure status (on time, late, early, scheduled)
 - Additional sensor: `<stop name> Next 3` with state format `HH:MM | HH:MM | HH:MM` for the next 3 upcoming departures
 
 ## Legacy YAML Examples

@@ -18,6 +18,7 @@ ATTR_SCHEDULED_TIME = "scheduled_time"
 ATTR_REALTIME = "realtime"
 ATTR_DELAY = "delay"
 ATTR_STATUS = "status"
+ATTR_STATUS_ICON = "status_icon"
 
 DEFAULT_NUM_DEPARTURES = 5
 DEFAULT_SCAN_INTERVAL = 60

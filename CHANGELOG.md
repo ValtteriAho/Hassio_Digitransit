@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.9] - 2026-06-11
+
+### Added
+- Added status-specific icons for departures and sensors.
+- Sensor icon now reflects next departure status:
+	- `mdi:clock-check-outline` for on time
+	- `mdi:clock-alert-outline` for late
+	- `mdi:clock-fast` for early
+	- `mdi:clock-outline` for scheduled
+- Added `status_icon` field to each departure attribute object.
+
 ## [0.1.8] - 2026-06-11
 
 ### Added
@@ -96,3 +107,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.1.6]: https://github.com/ValtteriAho/Hassio_Digitransit/releases/tag/v0.1.6
 [0.1.7]: https://github.com/ValtteriAho/Hassio_Digitransit/releases/tag/v0.1.7
 [0.1.8]: https://github.com/ValtteriAho/Hassio_Digitransit/releases/tag/v0.1.8
+[0.1.9]: https://github.com/ValtteriAho/Hassio_Digitransit/releases/tag/v0.1.9
