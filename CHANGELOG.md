@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.13] - 2026-06-12
+- Fixed entity ID duplication where stop name appeared twice (e.g., sensor.stop_name_stop_name)
+- Updated unique_id generation to include entity type suffix for better entity disambiguation
+
 ## [0.1.12] - 2026-06-11
 
 ### Fixed
@@ -127,3 +131,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.1.10]: https://github.com/ValtteriAho/Hassio_Digitransit/releases/tag/v0.1.10
 [0.1.11]: https://github.com/ValtteriAho/Hassio_Digitransit/releases/tag/v0.1.11
 [0.1.12]: https://github.com/ValtteriAho/Hassio_Digitransit/releases/tag/v0.1.12
+

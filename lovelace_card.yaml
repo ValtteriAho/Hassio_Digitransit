@@ -50,3 +50,36 @@ entities:
     entity: sensor.melaniementie_kaarantie_b
     attribute: lahto_3
     name: "Departure 3"
+
+---
+
+# Option 3: Multi-stop vertical card with status dots (recommended)
+type: markdown
+title: "Bussaikataulut"
+content: |
+  {% set stops = [
+    'sensor.melaniementie_kaarantie_b',
+    'sensor.huutoniementie_valitie'
+  ] %}
+
+  {% for stop_entity in stops %}
+  {% set deps = state_attr(stop_entity, 'departures') or [] %}
+  {% set full_name = state_attr(stop_entity, 'stop_name') or 'Stop' %}
+  {% set first_part = full_name.split(' / ')[0].strip() if ' / ' in full_name else full_name %}
+  {% set stop_name = first_part[:24] ~ '...' if first_part | length > 24 else first_part %}
+  {% set next_mins = states(stop_entity) %}
+
+  **{{ stop_name }}**
+  Seuraava: **{{ next_mins }}**
+
+  {% for dep in deps[:3] %}
+  {% set color = dep.status_color or 'gray' %}
+  {% if color == 'green' %}{% set dot = '🟢' %}
+  {% elif color == 'red' %}{% set dot = '🔴' %}
+  {% elif color == 'dodgerblue' %}{% set dot = '🔵' %}
+  {% else %}{% set dot = '⚪' %}{% endif %}
+  {{ dot }} **{{ dep.route }}** → {{ dep.destination }} | {{ dep.scheduled_time }} ({{ dep.minutes }} min)
+  {% endfor %}
+
+  ---
+  {% endfor %}

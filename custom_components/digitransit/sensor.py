@@ -76,7 +76,7 @@ class DigitransitSensor(CoordinatorEntity, SensorEntity):
         self._num_departures = stop_config.get("num_departures", 5)
         self._router = stop_config.get("router", "waltti")
         
-        self._attr_unique_id = f"{DOMAIN}_{self._stop_id}"
+        self._attr_unique_id = f"{DOMAIN}_{self._stop_id}_next_departure"
         self._attr_name = "Next departure"
 
     @property

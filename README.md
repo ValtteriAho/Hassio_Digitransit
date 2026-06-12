@@ -101,3 +101,4 @@ If entities do not appear:
 
 - Issues: https://github.com/valtteri-aho/Hassio-digitransit/issues
 - Home Assistant Community: https://community.home-assistant.io/
+
