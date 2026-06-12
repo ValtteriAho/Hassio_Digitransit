@@ -102,9 +102,8 @@ class DigitransitConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Handle the initial step."""
         errors: dict[str, str] = {}
 
-        if self._async_current_entries():
+        if self.hass.config_entries.async_entries(DOMAIN):
             return self.async_abort(reason="already_configured")
-
         if user_input is not None:
             api_key = user_input[CONF_API_KEY]
             
