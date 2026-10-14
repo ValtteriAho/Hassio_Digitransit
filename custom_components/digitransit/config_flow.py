@@ -6,30 +6,29 @@ import logging
 from typing import Any
 
 import aiohttp
+import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
-
 from homeassistant import config_entries
 from homeassistant.const import CONF_NAME
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-import homeassistant.helpers.config_validation as cv
 
 from .const import (
-    DOMAIN,
+    API_ROUTERS,
+    CONF_ALLOWED_ROUTES,
     CONF_API_KEY,
-    CONF_STOPS,
-    CONF_STOP_ID,
     CONF_NUM_DEPARTURES,
     CONF_ROUTER,
     CONF_SCAN_INTERVAL,
-    CONF_ALLOWED_ROUTES,
+    CONF_STOP_ID,
+    CONF_STOPS,
     DEFAULT_NUM_DEPARTURES,
-    DEFAULT_SCAN_INTERVAL,
-    MIN_SCAN_INTERVAL,
-    MAX_SCAN_INTERVAL,
-    API_ROUTERS,
     DEFAULT_ROUTER,
+    DEFAULT_SCAN_INTERVAL,
+    DOMAIN,
+    MAX_SCAN_INTERVAL,
+    MIN_SCAN_INTERVAL,
 )
 
 _LOGGER = logging.getLogger(__name__)

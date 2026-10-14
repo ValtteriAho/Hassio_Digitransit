@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Digitransit API Key",
-        "description": "Enter your Digitransit API subscription key. You can get one from https://portal-api.digitransit.fi/",
+        "description": "Enter your Digitransit API subscription key from the Digitransit API portal.",
         "data": {
           "api_key": "API Key"
         }

@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Digitransit API-avain",
-        "description": "Syötä Digitransit API -tilausavaimesi. Voit hankkia avaimen osoitteesta https://portal-api.digitransit.fi/",
+        "description": "Syötä Digitransit API -tilausavaimesi Digitransitin kehittäjäportaalista.",
         "data": {
           "api_key": "API-avain"
         }

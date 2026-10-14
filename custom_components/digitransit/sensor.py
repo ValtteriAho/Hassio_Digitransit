@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from datetime import datetime
 import logging
 import math
+from datetime import datetime
 from typing import Any, ClassVar
 
 from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
