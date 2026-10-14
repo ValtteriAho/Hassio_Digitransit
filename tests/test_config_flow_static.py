@@ -12,6 +12,12 @@ def test_default_router_exists_in_mapping() -> None:
     assert DEFAULT_ROUTER in API_ROUTERS
 
 
+def test_finland_and_varely_routers_exist() -> None:
+    """Ensure nationwide and regional routers exist."""
+    assert "finland" in API_ROUTERS
+    assert "varely" in API_ROUTERS
+
+
 def test_router_urls_use_expected_prefix() -> None:
     """Sanity-check configured API router URLs."""
     for url in API_ROUTERS.values():

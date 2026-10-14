@@ -7,7 +7,6 @@ on:
 jobs:
   secret-scan:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -17,10 +16,29 @@ jobs:
       - name: Secret scan
         uses: gitleaks/gitleaks-action@v2
 
+  hassfest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate with Hassfest
+        uses: home-assistant/actions/hassfest@master
+
+  hacs-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate HACS compliance
+        uses: hacs/action/validate@main
+        with:
+          category: integration
+
   lint-and-test:
     needs: secret-scan
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -35,9 +53,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements-dev.txt
 
-      - name: Lint
+      - name: Lint and Format Check
         run: |
           ruff check .
+          ruff format --check .
 
       - name: Run tests
         run: |

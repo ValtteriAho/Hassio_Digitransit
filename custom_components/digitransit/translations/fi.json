@@ -1,0 +1,89 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Digitransit API-avain",
+        "description": "Syötä Digitransit API -tilausavaimesi. Voit hankkia avaimen osoitteesta https://portal-api.digitransit.fi/",
+        "data": {
+          "api_key": "API-avain"
+        }
+      },
+      "stop": {
+        "title": "Lisää pysäkki",
+        "description": "Syötä pysäkkitunnus (esimerkiksi HSL:1010105 tai Vaasa:159712) ja valitse alueen reititin.",
+        "data": {
+          "stop_id": "Pysäkkitunnus",
+          "num_departures": "Näytettävien lähtöjen määrä",
+          "router": "Reititin",
+          "allowed_routes": "Sallitut linjat (pilkulla eroteltuna, valinnainen)"
+        },
+        "description_placeholders": {
+          "example": "HSL:1010105"
+        }
+      },
+      "add_another": {
+        "title": "Lisätäänkö toinen pysäkki?",
+        "description": "Olet lisännyt {stops_added} pysäkkiä. Haluatko lisätä toisen?",
+        "data": {
+          "add_another": "Lisää toinen pysäkki"
+        }
+      }
+    },
+    "error": {
+      "invalid_api_key": "Virheellinen API-avain. Tarkista Digitransit-avaimesi.",
+      "invalid_stop_id": "Virheellinen pysäkkitunnus valitulle reitittimelle. Varmista että pysäkki löytyy kyseiseltä alueelta.",
+      "already_added_stop": "Tämä pysäkki on jo lisätty."
+    },
+    "abort": {
+      "already_configured": "Integraatio on jo asennettu."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Digitransit - Asetukset",
+        "menu_options": {
+          "add_stop": "Lisää uusi pysäkki",
+          "remove_stop": "Poista pysäkki",
+          "settings": "Yleiset asetukset"
+        }
+      },
+      "add_stop": {
+        "title": "Lisää pysäkki",
+        "description": "Anna seurattavan pysäkin tiedot.",
+        "data": {
+          "stop_id": "Pysäkkitunnus",
+          "num_departures": "Lähtöjen määrä",
+          "router": "Reititin",
+          "allowed_routes": "Sallitut linjat (pilkulla eroteltuna, valinnainen)"
+        },
+        "description_placeholders": {
+          "example": "HSL:1010105"
+        }
+      },
+      "remove_stop": {
+        "title": "Poista pysäkki",
+        "description": "Valitse poistettavat pysäkit.",
+        "data": {
+          "stops_to_remove": "Poistettavat pysäkit"
+        }
+      },
+      "settings": {
+        "title": "Yleiset asetukset",
+        "description": "Määritä oletuslähtöjen määrä ja päivitysväli.",
+        "data": {
+          "num_departures": "Oletuslähtöjen määrä",
+          "scan_interval": "Päivitysväli (sekunteina)"
+        }
+      }
+    },
+    "error": {
+      "invalid_stop_id": "Virheellinen pysäkkitunnus valitulle reitittimelle.",
+      "already_added_stop": "Tämä pysäkki on jo lisätty."
+    },
+    "abort": {
+      "no_stops_configured": "Pysäkkejä ei ole määritettynä."
+    }
+  }
+}
+

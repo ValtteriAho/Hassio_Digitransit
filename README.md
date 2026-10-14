@@ -7,17 +7,18 @@ Real-time Finnish public transit departures in Home Assistant via Digitransit Gr
 
 ## Release
 
-- Current release: `0.1.14`
-- This is the first public release of the integration.
+- Current release: `0.2.0`
 
 ## Features
 
-- Config flow setup from Home Assistant UI
-- Multiple stops per integration entry
-- Configurable number of departures per stop
-- Real-time delay information in attributes
-- 60 second polling interval
-- Works across Digitransit-powered Finnish regions
+- **Config Flow & Options Flow**: Easy setup from Home Assistant UI; add or remove stops and tweak settings without reinstalling
+- **Concurrent API Updates**: Polling multiple stops concurrently via `asyncio.gather` for minimal latency
+- **Configurable Update Interval**: Flexible 15–300 second polling frequency
+- **Route Filtering**: Filter departures per stop to show only the lines you care about
+- **Native Timestamp Sensor**: `SensorDeviceClass.TIMESTAMP` sensor providing dynamic live Lovelace countdowns ("in 5 minutes")
+- **Real-Time Delays & Status**: Detailed status indicators (On time, Late, Early, Scheduled) and Lovelace color tags
+- **Diagnostics**: Built-in Home Assistant diagnostics support with API key redaction
+- **Multi-Region Support**: Covers HSL, Waltti cities, and nationwide transit (VR trains, Matkahuolto)
 
 ## Requirements
 
@@ -29,7 +30,7 @@ Real-time Finnish public transit departures in Home Assistant via Digitransit Gr
 1. Install this integration into your Home Assistant `custom_components` directory (or via HACS).
 2. Restart Home Assistant.
 3. Go to Settings -> Devices & Services -> Add Integration.
-4. Search for Digitransit.
+4. Search for **Digitransit**.
 5. Enter your Digitransit API subscription key.
 6. Add one or more stop IDs (for example `HSL:1010105` or `Vaasa:159712`) and choose the matching router.
 
@@ -46,15 +47,16 @@ Real-time Finnish public transit departures in Home Assistant via Digitransit Gr
 
 You can find stop IDs from your city route planner:
 
+- Finland (Nationwide / Trains / Regional): https://opas.matka.fi
 - HSL: https://reittiopas.hsl.fi
 - Waltti cities: city-specific Digitransit instances (for example `tampere.digitransit.fi`)
 
-The stop ID must belong to the router you select in the integration. An HSL stop ID must use the `hsl` router. Waltti stop IDs must include the city/feed prefix with the correct capitalization, for example `Vaasa:159712` (not `vaasa:159712`), and use the `waltti` router.
-
 Router choices in the integration:
 
-- `waltti`
-- `hsl`
+- `finland` (Nationwide: trains, long-distance buses, regional)
+- `waltti` (All Waltti cities: Vaasa, Hämeenlinna, Joensuu, etc.)
+- `hsl` (Helsinki region)
+- `varely` (Varsinais-Suomi / Southwest Finland)
 - `tampere`
 - `turku`
 - `jyvaskyla`
@@ -63,24 +65,24 @@ Router choices in the integration:
 
 ## Entity Output
 
-Each configured stop creates one sensor entity.
+Each configured stop creates three sensor entities grouped under the stop device:
 
-- Sensor state: minutes until next departure (`Now`, `1 min`, `N min`)
-- Sensor attributes: departure list with route, destination, scheduled time, realtime flag, delay, and status (`On time`, `Late`, `Early`, `Scheduled`)
-- Sensor icon automatically changes by next departure status (on time, late, early, scheduled)
-- Each departure includes `status_icon` and `status_color` attributes for Lovelace styling (`green`, `red`, `dodgerblue`, `gray`)
-- Additional sensor: `<stop name> Next 3` with state format `HH:MM | HH:MM | HH:MM` for the next 3 upcoming departures
+1. **Next departure** (`sensor.<stop_name>_next_departure`):
+   - State: minutes until next departure (`Now`, `1 min`, `N min`)
+   - Attributes: full departure list (`departures`), individual departures (`lahto_1`, `lahto_2`), scheduled vs estimated times, delay, and status
+   - Dynamic icon and status colors (`status_icon`, `status_color`)
+2. **Next departure time** (`sensor.<stop_name>_next_departure_time`):
+   - Device class: `timestamp`
+   - Native UTC ISO-8601 timestamp allowing Lovelace UI to render live countdowns
+3. **Next 3 departures** (`sensor.<stop_name>_next_3_departures`):
+   - State format: `HH:MM | HH:MM | HH:MM` for a quick glance
 
-## Legacy YAML Examples
+## Options Flow
 
-This repository still includes legacy YAML examples:
-
-- `sensor_config.yaml`
-- `sensor_config.example.yaml`
-- `template_sensors.yaml`
-- `lovelace_card.yaml`
-
-These are examples only. The maintained setup path is the config-flow custom integration.
+Once installed, navigate to **Settings -> Devices & Services -> Digitransit -> Configure** to:
+- **Add New Stop**: Add additional stops at any time
+- **Remove Stop**: Select and remove unwanted stops
+- **General Settings**: Adjust default departures and update interval (15-300 seconds)
 
 ## Troubleshooting
 
@@ -89,17 +91,17 @@ If entities do not appear:
 1. Confirm the integration is loaded under Settings -> Devices & Services.
 2. Confirm subscription key is valid and active in Digitransit API portal.
 3. Confirm stop IDs exist in Digitransit.
-4. Check logs under Settings -> System -> Logs.
+4. Download diagnostics under integration device page to inspect API responses.
+5. Check logs under Settings -> System -> Logs.
 
 ## Documentation
 
 - Installation details: `INSTALL.md`
 - Changelog: `CHANGELOG.md`
 - Repository info: `info.md`
+- Lovelace examples: `lovelace_card.yaml`
 
 ## Support
 
 - Issues: https://github.com/valtteri-aho/Hassio-digitransit/issues
 - Home Assistant Community: https://community.home-assistant.io/
-
-

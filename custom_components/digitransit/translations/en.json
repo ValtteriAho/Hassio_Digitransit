@@ -14,7 +14,8 @@
         "data": {
           "stop_id": "Stop ID",
           "num_departures": "Number of Departures to Show",
-          "router": "Router"
+          "router": "Router",
+          "allowed_routes": "Allowed Routes (comma-separated, optional)"
         },
         "description_placeholders": {
           "example": "HSL:1010105"
@@ -40,12 +41,48 @@
   "options": {
     "step": {
       "init": {
-        "title": "Options",
-        "description": "Configure options for the Digitransit integration.",
+        "title": "Digitransit Options",
+        "menu_options": {
+          "add_stop": "Add New Stop",
+          "remove_stop": "Remove Stop",
+          "settings": "General Settings"
+        }
+      },
+      "add_stop": {
+        "title": "Add Stop",
+        "description": "Enter details for the new stop to monitor.",
         "data": {
-          "num_departures": "Number of Departures to Show"
+          "stop_id": "Stop ID",
+          "num_departures": "Number of Departures",
+          "router": "Router",
+          "allowed_routes": "Allowed Routes (comma-separated, optional)"
+        },
+        "description_placeholders": {
+          "example": "HSL:1010105"
+        }
+      },
+      "remove_stop": {
+        "title": "Remove Stop",
+        "description": "Select the stop(s) you wish to remove.",
+        "data": {
+          "stops_to_remove": "Stops to Remove"
+        }
+      },
+      "settings": {
+        "title": "General Settings",
+        "description": "Configure default departures and update interval.",
+        "data": {
+          "num_departures": "Default Number of Departures",
+          "scan_interval": "Update Interval (seconds)"
         }
       }
+    },
+    "error": {
+      "invalid_stop_id": "Invalid stop ID for the selected router.",
+      "already_added_stop": "This stop has already been added."
+    },
+    "abort": {
+      "no_stops_configured": "No stops are currently configured."
     }
   }
 }

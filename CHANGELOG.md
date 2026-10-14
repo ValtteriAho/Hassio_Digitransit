@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-12
+
+### Added
+- **Full Options Flow**: Add and remove stops directly in integration options without needing re-installation.
+- **Configurable Update Interval**: Set polling scan interval between 15 and 300 seconds.
+- **Route Filtering**: Filter departures by route number per stop (comma-separated list).
+- **Disruption Alerts**: Real-time service alerts (`alerts`) included in entity attributes with headers, descriptions, and severity.
+- **Dynamic Vehicle Mode & Icons**: Support for transit modes (`vehicleMode`: BUS, TRAM, RAIL, SUBWAY, FERRY) with corresponding MDI icons.
+- **Native Timestamp Sensor**: Added `DigitransitTimestampSensor` (`SensorDeviceClass.TIMESTAMP`) for live relative countdown rendering in Lovelace without 1-second polling.
+- **Finland and VARELY Routers**: Added support for nationwide `finland` router (VR trains, Matkahuolto express buses) and `varely`.
+- **Diagnostics Platform**: Added `diagnostics.py` with automatic API key redaction (`async_redact_data`).
+- **Finnish Translations**: Complete Finnish localization in `translations/fi.json`.
+- **CI/CD Quality Gates**: Added Hassfest and HACS validation actions in GitHub workflows.
+
+### Changed & Optimized
+- **GraphQL Batching**: Concurrently fetch and batch multiple stops per router in single GraphQL queries, minimizing HTTP requests and latency.
+- **GraphQL Parameterization**: Switched to parameterized GraphQL queries with JSON variables and error isolation per stop.
+- **Sensors**: Clearly separated scheduled arrival time (`scheduled_time`) from estimated/realtime departure time (`estimated_time`).
+
+### Fixed
+- **Shared Session Lifecycle**: Removed `session.close()` call that was closing Home Assistant's shared `aiohttp` ClientSession.
+- **Formatting Artifacts**: Fixed redundant bracketed status tokens in textual departure formatting.
+
 ## [0.1.14] - 2026-06-12
 
 ### Fixed
@@ -136,7 +159,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.1.10]: https://github.com/ValtteriAho/Hassio_Digitransit/releases/tag/v0.1.10
 [0.1.11]: https://github.com/ValtteriAho/Hassio_Digitransit/releases/tag/v0.1.11
 [0.1.12]: https://github.com/ValtteriAho/Hassio_Digitransit/releases/tag/v0.1.12
-
-
-
-
+[0.1.13]: https://github.com/ValtteriAho/Hassio_Digitransit/releases/tag/v0.1.13
+[0.1.14]: https://github.com/ValtteriAho/Hassio_Digitransit/releases/tag/v0.1.14
+[0.2.0]: https://github.com/ValtteriAho/Hassio_Digitransit/releases/tag/v0.2.0
