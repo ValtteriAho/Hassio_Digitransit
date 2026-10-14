@@ -16,9 +16,6 @@
           "num_departures": "Näytettävien lähtöjen määrä",
           "router": "Reititin",
           "allowed_routes": "Sallitut linjat (pilkulla eroteltuna, valinnainen)"
-        },
-        "description_placeholders": {
-          "example": "HSL:1010105"
         }
       },
       "add_another": {
@@ -56,9 +53,6 @@
           "num_departures": "Lähtöjen määrä",
           "router": "Reititin",
           "allowed_routes": "Sallitut linjat (pilkulla eroteltuna, valinnainen)"
-        },
-        "description_placeholders": {
-          "example": "HSL:1010105"
         }
       },
       "remove_stop": {
@@ -86,4 +80,3 @@
     }
   }
 }
-

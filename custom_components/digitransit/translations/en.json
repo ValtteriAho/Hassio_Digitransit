@@ -16,9 +16,6 @@
           "num_departures": "Number of Departures to Show",
           "router": "Router",
           "allowed_routes": "Allowed Routes (comma-separated, optional)"
-        },
-        "description_placeholders": {
-          "example": "HSL:1010105"
         }
       },
       "add_another": {
@@ -56,9 +53,6 @@
           "num_departures": "Number of Departures",
           "router": "Router",
           "allowed_routes": "Allowed Routes (comma-separated, optional)"
-        },
-        "description_placeholders": {
-          "example": "HSL:1010105"
         }
       },
       "remove_stop": {

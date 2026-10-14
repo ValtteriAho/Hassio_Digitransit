@@ -200,7 +200,6 @@ class DigitransitConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 }
             ),
             errors=errors,
-            description_placeholders={"example": "HSL:1010105"},
         )
 
     async def async_step_add_another(
@@ -313,7 +312,6 @@ class DigitransitOptionsFlow(config_entries.OptionsFlowWithReload):
                 }
             ),
             errors=errors,
-            description_placeholders={"example": "HSL:1010105"},
         )
 
     async def async_step_remove_stop(

@@ -22,8 +22,9 @@ from custom_components.digitransit.sensor import (
 class _DummyCoordinator:
     """Minimal coordinator stub for unit tests."""
 
-    data = {}
-    last_update_success = True
+    def __init__(self) -> None:
+        self.data: dict = {}
+        self.last_update_success: bool = True
 
 
 def _make_sensor(allowed_routes: str = "") -> DigitransitSensor:

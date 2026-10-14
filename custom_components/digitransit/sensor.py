@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import datetime
 import logging
 import math
-from typing import Any
+from typing import Any, ClassVar
 
 from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
 from homeassistant.config_entries import ConfigEntry
@@ -61,21 +61,21 @@ class DigitransitBaseEntity(CoordinatorEntity[DigitransitCoordinator]):
 
     _attr_has_entity_name = True
 
-    _STATUS_ICONS = {
+    _STATUS_ICONS: ClassVar[dict[str, str]] = {
         "On time": "mdi:clock-check-outline",
         "Late": "mdi:clock-alert-outline",
         "Early": "mdi:clock-fast",
         "Scheduled": "mdi:clock-outline",
     }
 
-    _STATUS_COLORS = {
+    _STATUS_COLORS: ClassVar[dict[str, str]] = {
         "On time": "green",
         "Late": "red",
         "Early": "dodgerblue",
         "Scheduled": "gray",
     }
 
-    _VEHICLE_ICONS = {
+    _VEHICLE_ICONS: ClassVar[dict[str, str]] = {
         "BUS": "mdi:bus",
         "TRAM": "mdi:tram",
         "RAIL": "mdi:train",
